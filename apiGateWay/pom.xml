@@ -24,12 +24,27 @@
         </dependency>
         <!--Api gateway-->
 
+        <!--Spring web-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-web</artifactId>-->
+<!--        </dependency>-->
+        <!--Spring web-->
+
         <!--service discovery-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
         <!--service discovery-->
+
+        <!--Spring security-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-security</artifactId>-->
+<!--        </dependency>-->
+        <!--Spring security-->
+
     </dependencies>
 
 </project>
