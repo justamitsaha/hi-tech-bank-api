@@ -41,7 +41,7 @@ public class ProjectSecurity {
                         return config;
                     }
                 }).and().csrf().ignoringAntMatchers("/authenticate", "/register").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and().addFilterAfter(new JWTTokenGeneratorFilter(), UsernamePasswordAuthenticationFilter.class)
+                .and()//.addFilterAfter(new JWTTokenGeneratorFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JWTTokenValidatorFilter(), UsernamePasswordAuthenticationFilter.class).authorizeHttpRequests()
                 .antMatchers("/dashboard").authenticated()
                 .antMatchers("/authenticate").permitAll()

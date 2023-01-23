@@ -39,12 +39,6 @@ public class AuthenticationController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(SecurityConstants.JWT_HEADER,jwt);
         return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body("OK");
-//        List<Customer> customers = customerRepository.findByEmail(userDTO.getUsername());
-//        if (customers.size() > 0) {
-//            return customers.get(0);
-//        } else {
-//            return null;
-//        }
     }
 
     @GetMapping("/dashboard")
