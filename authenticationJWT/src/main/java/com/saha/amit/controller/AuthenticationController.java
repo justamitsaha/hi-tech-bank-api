@@ -30,7 +30,7 @@ public class AuthenticationController {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @RequestMapping("/authenticate")
+    @RequestMapping("/public/authenticate")
     public ResponseEntity<String> getUserDetailsAfterLogin(@RequestBody UserDTO userDTO) {
         LOG.info("getUserDetailsAfterLogin");
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword());

@@ -17,7 +17,7 @@ public class OnboardingController {
     @Autowired
     OnboardingService onboardingService;
 
-    @PostMapping("/applyToOpenAccount")
+    @PostMapping("/public/applyToOpenAccount")
     public ResponseEntity saveCustomerApplication(@Valid @RequestBody OnboardUser onboardUser) {
         var response = onboardingService.saveCustomerApplication(onboardUser);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
