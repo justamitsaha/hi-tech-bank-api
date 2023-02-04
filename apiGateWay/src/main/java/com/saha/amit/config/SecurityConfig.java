@@ -1,15 +1,17 @@
 package com.saha.amit.config;
 
+import com.saha.amit.constants.ApiGatewayCosntants;
 import com.saha.amit.filter.JwtAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -30,6 +32,10 @@ public class SecurityConfig {
                     configuration.setAllowedOrigins(List.of("http://localhost:4200"));
                     configuration.setAllowedMethods(List.of("*"));
                     configuration.setAllowedHeaders(List.of("*"));
+                    configuration.setAllowCredentials(true);
+                    configuration.setAllowedHeaders(Collections.singletonList("*"));
+                    configuration.setExposedHeaders(Arrays.asList(ApiGatewayCosntants.JWT_HEADER));  //To set headers in different domain
+                    configuration.setMaxAge(3600L);
                     return configuration;
                 }).and().csrf().disable()
                 .addFilterBefore(new JwtAuthorizationFilter(), SecurityWebFiltersOrder.LAST)

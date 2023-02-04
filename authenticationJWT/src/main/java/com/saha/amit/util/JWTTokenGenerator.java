@@ -16,7 +16,7 @@ public class JWTTokenGenerator {
                 .claim("username", username)
                 //.claim("authorities", populateAuthorities(authentication.getAuthorities()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + 30000000))
+                .setExpiration(new Date((new Date()).getTime() + 60000))
                 .signWith(key).compact();
         return jwt;
     }
