@@ -24,6 +24,7 @@ public class ApplicationRepository {
     }
 
     public Application findApplicationById(String applicationId){
+        //Devtool dependency was causing issue in casting so had to be removed
         return (Application) redisTemplate.opsForHash().get(HASH_KEY,applicationId);
     }
 
