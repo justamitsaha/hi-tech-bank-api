@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Data
@@ -17,15 +16,12 @@ import java.util.Date;
 @Entity
 @Table(name = "onboard_customer")
 public class OnboardUser {
-    @NotEmpty(message = "Please provide account type!")
     @Column(name = "accountType")
     private String accountType;
     @Column(name = "dob")
     private Date dob;
-    @NotEmpty(message = "Please provide your Name!")
     @Column(name = "name")
     private String name;
-    @NotEmpty(message = "Please provide your PAN card number!")
     @Column(name = "pan")
     private String pan;
     @Column(name = "address1")
@@ -38,10 +34,8 @@ public class OnboardUser {
     private String state;
     @Column(name = "pincode")
     private String pincode;
-    @NotEmpty(message = "Email cannot be blank!")
     @Column(name = "email")
     private String email;
-    @NotEmpty(message = "Phone not cannot be blank!")
     @Column(name = "phone")
     private String phone;
     @Column(name = "applicationId")

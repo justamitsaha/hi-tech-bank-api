@@ -10,18 +10,32 @@ import java.util.Date;
 
 public class OnboardingUtil {
 
+    static int min = 100000;
+    static int max = 999999;
+
     public static String generateApplicationID(){
         var date = new Date();
         String secs = String.valueOf((date.getTime())/1000);
-        int min = 10000;
-        int max = 99999;
         String applicationID = secs +"-"+(int)Math.floor(Math.random() * (max - min + 1) + min);
         return applicationID;
     }
 
+    public static String generateRandomSixDigit(){
+        return String.valueOf(((int)Math.floor(Math.random() * (max - min + 1) + min)));
+    }
+    public static String getFileNameForStoring(MultipartFile multipartFile, String applicationId){
+        String random = String.valueOf((int)Math.floor(Math.random() * (max - min + 1) + min));
+
+        var fileName = multipartFile.getOriginalFilename();
+        String fileExtension = "";
+        int lastIndexOf = fileName.lastIndexOf(".");
+        if (!(lastIndexOf == -1)) {
+            fileExtension = fileName.substring(lastIndexOf+1);
+        }
+        return applicationId+"-"+random+"."+fileExtension;
+    }
+
     public static String saveFileLocally(String tmpdir, MultipartFile multipartFile, String applicationId) throws IOException {
-        int min = 10000;
-        int max = 99999;
         String random = String.valueOf((int)Math.floor(Math.random() * (max - min + 1) + min));
 
         var fileName = multipartFile.getOriginalFilename();
