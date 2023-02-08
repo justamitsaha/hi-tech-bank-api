@@ -23,12 +23,20 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--Web flux for using webClient-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
+        <!--Web flux for using webClient-->
+
+<!--        creates issue in casting so removed-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-devtools</artifactId>-->
+<!--            <scope>runtime</scope>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
 
         <!-- lombok-->
         <dependency>

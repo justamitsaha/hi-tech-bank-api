@@ -28,8 +28,8 @@ public class OnboardingController {
     private final Logger log = Logger.getLogger(OnboardingController.class.getName());
 
     @PostMapping(value = "/public/applyToOpenAccount", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity saveCustomerApplication(@RequestPart OnboardUserDTO onboardUser, @RequestPart MultipartFile multipartFile1, @RequestPart MultipartFile multipartFile2) throws IOException {
-        var response = onboardingService.saveCustomerApplication(onboardUser, multipartFile1, multipartFile2);
+    public ResponseEntity applyToOpenAccount(@RequestPart OnboardUserDTO onboardUser, @RequestPart MultipartFile multipartFile1, @RequestPart MultipartFile multipartFile2) throws IOException {
+        var response = onboardingService.applyToOpenAccount(onboardUser, multipartFile1, multipartFile2);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 }
