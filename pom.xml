@@ -15,6 +15,7 @@
         <module>onboardUserService</module>
         <module>apiGateWay</module>
         <module>redis-cache</module>
+        <module>configServer</module>
     </modules>
 
     <parent>
