@@ -4,9 +4,11 @@ import com.saha.amit.dto.OnboardUserDTO;
 import com.saha.amit.model.OnboardUser;
 import com.saha.amit.service.OnboardingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +20,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
 public class OnboardingController {
+
+    @Value("${my.greeting: default lau}")
+    private String config;
+
+    @Value("${my.list.values}")
+    private List<String> listStrings;
 
     @Autowired
     OnboardingService onboardingService;
@@ -31,5 +40,10 @@ public class OnboardingController {
     public ResponseEntity applyToOpenAccount(@RequestPart OnboardUserDTO onboardUser, @RequestPart MultipartFile multipartFile1, @RequestPart MultipartFile multipartFile2) throws IOException {
         var response = onboardingService.applyToOpenAccount(onboardUser, multipartFile1, multipartFile2);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
+
+    @GetMapping(value = "/public/test")
+    public ResponseEntity<String> test(){
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(config + listStrings.toString());
     }
 }

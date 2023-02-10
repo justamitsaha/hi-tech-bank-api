@@ -76,6 +76,13 @@
         </dependency>
         <!--JDBC SQL JPA-->
 
+        <!--config server-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <!--config server-->
+
     </dependencies>
 
 </project>
