@@ -5,6 +5,7 @@ import com.saha.amit.model.OnboardUser;
 import com.saha.amit.service.OnboardingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
+@RefreshScope
 public class OnboardingController {
 
     @Value("${my.greeting: default lau}")
@@ -31,6 +33,9 @@ public class OnboardingController {
 
     @Value("${my.list.values}")
     private List<String> listStrings;
+
+    @Value("${demo.property: noValue}")
+    private String testConfig;
 
     @Autowired
     OnboardingService onboardingService;
@@ -44,6 +49,6 @@ public class OnboardingController {
 
     @GetMapping(value = "/public/test")
     public ResponseEntity<String> test(){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(config + listStrings.toString());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(config +"<-->"+ listStrings.toString()+"<-->"+testConfig);
     }
 }
