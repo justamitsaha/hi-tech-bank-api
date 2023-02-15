@@ -60,6 +60,13 @@
         </dependency>
         <!--jtw-->
 
+        <!--config server-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <!--config server-->
+
     </dependencies>
 
     <build>
