@@ -1,4 +1,3 @@
-#mvn clean install
 
 #Start with a base image containing Java runtime
 FROM openjdk:11-jdk-slim as build
