@@ -8,7 +8,7 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 @EnableEurekaServer
 public class DiscoveryServiceApplication {
     public static void main(String[] args) {
-        System.out.println("Hi");
+        System.out.println("Local URL --> http://localhost:8081/");
         SpringApplication.run(DiscoveryServiceApplication.class, args);
     }
 }
