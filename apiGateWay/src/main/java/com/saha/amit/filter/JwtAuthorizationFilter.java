@@ -1,5 +1,6 @@
 package com.saha.amit.filter;
 
+import com.saha.amit.config.PropertiesConfig;
 import com.saha.amit.constants.ApiGatewayCosntants;
 import com.thoughtworks.xstream.security.ForbiddenClassException;
 import io.jsonwebtoken.Claims;
@@ -40,7 +41,7 @@ public class JwtAuthorizationFilter implements WebFilter {
             if (!jwt.isEmpty()) {
                 try {
                     SecretKey key = Keys.hmacShaKeyFor(
-                            ApiGatewayCosntants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
+                            PropertiesConfig.JWT_KEY.getBytes(StandardCharsets.UTF_8));
                     Claims claims = Jwts.parserBuilder()
                             .setSigningKey(key)
                             .build()
