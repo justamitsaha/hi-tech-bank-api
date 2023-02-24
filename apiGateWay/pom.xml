@@ -67,6 +67,14 @@
         </dependency>
         <!--config server-->
 
+        <!-- lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- lombok-->
+
     </dependencies>
 
     <build>

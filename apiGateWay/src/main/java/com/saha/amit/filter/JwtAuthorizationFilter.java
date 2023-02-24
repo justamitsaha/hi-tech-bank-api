@@ -6,6 +6,7 @@ import com.thoughtworks.xstream.security.ForbiddenClassException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -30,6 +31,9 @@ public class JwtAuthorizationFilter implements WebFilter {
 
     private final Logger LOG = Logger.getLogger(JWTFilter.class.getName());
 
+    @Autowired
+    PropertiesConfig propertiesConfig;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         HttpHeaders httpHeaders = exchange.getRequest().getHeaders();
@@ -41,7 +45,7 @@ public class JwtAuthorizationFilter implements WebFilter {
             if (!jwt.isEmpty()) {
                 try {
                     SecretKey key = Keys.hmacShaKeyFor(
-                            PropertiesConfig.JWT_KEY.getBytes(StandardCharsets.UTF_8));
+                            propertiesConfig.getJwtKey().getBytes(StandardCharsets.UTF_8));
                     Claims claims = Jwts.parserBuilder()
                             .setSigningKey(key)
                             .build()

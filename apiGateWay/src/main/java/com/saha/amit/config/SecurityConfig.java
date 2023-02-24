@@ -2,6 +2,7 @@ package com.saha.amit.config;
 
 import com.saha.amit.constants.ApiGatewayCosntants;
 import com.saha.amit.filter.JwtAuthorizationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -25,11 +26,13 @@ public class SecurityConfig {
             "/private"
     };
 
+    @Autowired
+    PropertiesConfig propertiesConfig;
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http.cors().configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(PropertiesConfig.ALLOWED_URLS);
+                    configuration.setAllowedOrigins(propertiesConfig.allowedUrls);
                     configuration.setAllowedMethods(List.of("*"));
                     configuration.setAllowedHeaders(List.of("*"));
                     configuration.setAllowCredentials(true);

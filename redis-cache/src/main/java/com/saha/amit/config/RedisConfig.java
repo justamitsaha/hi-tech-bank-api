@@ -1,5 +1,6 @@
 package com.saha.amit.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -13,11 +14,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableRedisRepositories
 public class RedisConfig {
 
+    @Autowired
+    RedisCacheProperties redisCacheProperties;
+
     @Bean
     public JedisConnectionFactory connectionFactory(){
+        System.out.println(redisCacheProperties.getRedisHostName() + "<--->"+ redisCacheProperties.getRedisPort());
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName("localhost");
-        configuration.setPort(6379);
+        configuration.setHostName(redisCacheProperties.getRedisHostName());
+        configuration.setPort(redisCacheProperties.getRedisPort());
         return new JedisConnectionFactory(configuration);
     }
 

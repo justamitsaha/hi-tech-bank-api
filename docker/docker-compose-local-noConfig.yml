@@ -1,0 +1,39 @@
+#docker compose -f docker-compose-local-noConfig.yml up
+version: '3'
+services:
+  discovery-service:
+    image: justamitsaha/discovery-service
+    mem_limit: 700m
+    ports:
+      - "8081:8081"
+    networks:
+      - high-tech-bank
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
+    environment:
+      spring_profiles_active: localDocker
+      spring_config_import: configserver:http://host.docker.internal:9000/configService
+  api-gate-way-service:
+    image: justamitsaha/api-gate-way-service
+    mem_limit: 700m
+    ports:
+      - "8080:8080"
+    networks:
+      - high-tech-bank
+    depends_on:
+      - discovery-service
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 3
+        window: 120s
+    environment:
+      spring_profiles_active: localDocker
+      spring_config_import: configserver:http://host.docker.internal:9000/configService
+networks:
+  high-tech-bank:
