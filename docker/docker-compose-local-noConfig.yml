@@ -16,7 +16,7 @@ services:
         window: 120s
     environment:
       spring_profiles_active: localDocker
-      spring_config_import: configserver:http://host.docker.internal:9000/configService
+      spring_config_import: config-service:http://host.docker.internal:9000/configService
   api-gate-way-service:
     image: justamitsaha/api-gate-way-service
     mem_limit: 700m
@@ -34,6 +34,6 @@ services:
         window: 120s
     environment:
       spring_profiles_active: localDocker
-      spring_config_import: configserver:http://host.docker.internal:9000/configService
+      spring_config_import: config-service:http://host.docker.internal:9000/configService
 networks:
   high-tech-bank:
