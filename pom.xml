@@ -10,12 +10,12 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>authentication</module>
-        <module>authenticationJWT</module>
-        <module>discoveryService</module>
-        <module>onboardUserService</module>
-        <module>apiGateWay</module>
-        <module>redis-cache</module>
-        <module>configServer</module>
+        <module>authentication-jwt-service</module>
+        <module>discovery-service</module>
+        <module>onboard-user-service</module>
+        <module>api-gate-way-service</module>
+        <module>redis-cache-service</module>
+        <module>config-service</module>
     </modules>
 
     <parent>
