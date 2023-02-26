@@ -32,7 +32,6 @@
         <!--config server-->
 
 
-
     </dependencies>
 
     <build>
@@ -43,6 +42,9 @@
                 <configuration>
                     <mainClass>com.saha.amit.DiscoveryServiceApplication</mainClass>
                     <layout>JAR</layout>
+                    <image>
+                        <name>justamitsaha/${project.artifactId}</name>
+                    </image>
                 </configuration>
             </plugin>
         </plugins>

@@ -109,6 +109,9 @@
                 <configuration>
                     <mainClass>com.saha.amit.AuthenticationJwtApplication</mainClass>
                     <layout>JAR</layout>
+                    <image>
+                        <name>justamitsaha/${project.artifactId}</name>
+                    </image>
                 </configuration>
             </plugin>
         </plugins>

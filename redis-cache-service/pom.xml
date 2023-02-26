@@ -97,6 +97,9 @@
                 <configuration>
                     <mainClass>com.saha.amit.RedisCacheApplication</mainClass>
                     <layout>JAR</layout>
+                    <image>
+                        <name>justamitsaha/${project.artifactId}</name>
+                    </image>
                 </configuration>
             </plugin>
         </plugins>
