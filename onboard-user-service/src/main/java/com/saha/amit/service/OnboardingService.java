@@ -1,5 +1,6 @@
 package com.saha.amit.service;
 
+import com.saha.amit.config.OnBoardingProperties;
 import com.saha.amit.dto.OnboardUserDTO;
 import com.saha.amit.repository.OnboardingRepositiry;
 import com.saha.amit.util.OnboardingUtil;
@@ -18,6 +19,9 @@ public class OnboardingService {
     OnboardingRepositiry onboardingRepositiry;
     @Autowired
     WebClient.Builder webClientBuilder;
+
+    @Autowired
+    OnBoardingProperties onBoardingProperties;
     private final Logger log = Logger.getLogger(OnboardingService.class.getName());
     public String applyToOpenAccount(OnboardUserDTO onboardUser, MultipartFile multipartFile1, MultipartFile multipartFile2) throws IOException {
         String applicationId = OnboardingUtil.generateApplicationID();
@@ -27,8 +31,9 @@ public class OnboardingService {
         onboardUser.setAttachment1Name(OnboardingUtil.getFileNameForStoring(multipartFile1, applicationId));
         onboardUser.setAttachment2Name(OnboardingUtil.getFileNameForStoring(multipartFile2,applicationId));
 
+        System.out.println(onBoardingProperties.getRedisSaveApplicationEndPoint());
         var response =webClientBuilder.build().post()
-                .uri("http://redis-cache-service-service/redisCache/public/saveApplication")
+                .uri(onBoardingProperties.getRedisSaveApplicationEndPoint())
                 .body(Mono.just(onboardUser), OnboardUserDTO.class)
                 .retrieve()
                 .bodyToMono(OnboardUserDTO.class)
