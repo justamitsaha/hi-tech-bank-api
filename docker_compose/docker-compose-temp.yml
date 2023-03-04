@@ -1,5 +1,4 @@
 #docker compose -f docker-compose-temp.yml up
-#docker compose -f docker-compose-local-noConfig.yml up
 version: '3'
 
 services:
@@ -20,6 +19,13 @@ services:
       spring_profiles_active: localDocker
       spring_config_import: configserver:http://host.docker.internal:9000/configService
 
+  high-tech-bank-ui:
+    image: justamitsaha/high-tech-bank-ui
+    ports: 
+      - "80:80"
+    networks:
+      - high-tech-bank
+
   api-gate-way-service:
     image: justamitsaha/api-gate-way-service
     mem_limit: 700m
@@ -39,25 +45,8 @@ services:
       spring_profiles_active: localDocker
       spring_config_import: configserver:http://host.docker.internal:9000/configService
 
-  redis-cache-service:
-    image: justamitsaha/redis-cache-service
-    mem_limit: 700m
-    networks:
-      - high-tech-bank
-    depends_on:
-      - discovery-service
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-        max_attempts: 3
-        window: 120s
-    environment:
-      spring_profiles_active: localDocker
-      spring_config_import: configserver:http://host.docker.internal:9000/configService
-
-  onboard-user-service:
-    image: justamitsaha/onboard-user-service
+  authentication-jwt-service:
+    image: justamitsaha/authentication-jwt-service
     mem_limit: 700m
     networks:
       - high-tech-bank

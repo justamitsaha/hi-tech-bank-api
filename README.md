@@ -33,3 +33,14 @@ docker run --name=onboard-user-service --net mynet --env spring.profiles.active=
 docker run --name=authentication-jwt-service --net mynet --env spring.profiles.active=localDocker --env spring.config.import=configserver:http://host.docker.internal:9000/configService  justamitsaha/authentication-jwt-service
 
 docker run --name=authentication-jwt-service --net mynet --env spring.profiles.active=localDocker --env spring.config.import=configserver:http://config-service:9000/configService  justamitsaha/authentication-jwt-service
+
+Actuator URL
+http://localhost:8080/actuator/info
+http://localhost:8080/actuator/
+
+http://localhost:8080/onBoardingService/actuator/
+http://localhost:8080/onBoardingService/actuator/info
+
+POST
+http://localhost:8080/redisCache/actuator/refresh
+http://localhost:8080/onBoardingService/actuator/shutdown/
