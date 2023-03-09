@@ -69,6 +69,13 @@
         </dependency>
         <!--actuator-->
 
+        <!--sleuth-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+        <!--sleuth-->
+
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

@@ -5,6 +5,8 @@ import com.saha.amit.config.RedisCacheProperties;
 import com.saha.amit.entity.Application;
 import com.saha.amit.repository.ApplicationRepository;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +23,12 @@ public class RedisController {
     @Autowired
     RedisCacheProperties redisCacheProperties;
 
+    private final static Logger log = LoggerFactory.getLogger(RedisController.class);
+
     @PostMapping("public/saveApplication")
     public ResponseEntity<Application> saveApplication(@RequestBody Application application){
-       return ResponseEntity.status(HttpStatus.ACCEPTED).body(applicationRepository.saveApplication(application));
+        log.info("Start saveApplication");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(applicationRepository.saveApplication(application));
     }
 
     @GetMapping("public/getAllApplication")

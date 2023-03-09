@@ -1,8 +1,9 @@
 package com.saha.amit.controller;
 
 import com.saha.amit.dto.OnboardUserDTO;
-import com.saha.amit.model.OnboardUser;
 import com.saha.amit.service.OnboardingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -22,7 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
+
 
 @RestController
 @RefreshScope
@@ -39,10 +40,12 @@ public class OnboardingController {
 
     @Autowired
     OnboardingService onboardingService;
-    private final Logger log = Logger.getLogger(OnboardingController.class.getName());
+
+    private static final Logger log= LoggerFactory.getLogger(OnboardingController.class);
 
     @PostMapping(value = "/public/applyToOpenAccount", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity applyToOpenAccount(@RequestPart OnboardUserDTO onboardUser, @RequestPart MultipartFile multipartFile1, @RequestPart MultipartFile multipartFile2) throws IOException {
+        log.info("Start applyToOpenAccount controller");
         var response = onboardingService.applyToOpenAccount(onboardUser, multipartFile1, multipartFile2);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
