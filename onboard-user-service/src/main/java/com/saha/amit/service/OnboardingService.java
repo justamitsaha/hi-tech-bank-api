@@ -7,6 +7,7 @@ import com.saha.amit.util.OnboardingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,12 +39,13 @@ public class OnboardingService {
         System.out.println(onBoardingProperties.getRedisSaveApplicationEndPoint());
 
         try {
-            var response =webClientBuilder.build().post()
+            ResponseEntity responseEntity =webClientBuilder.build().post()
                     .uri(onBoardingProperties.getRedisSaveApplicationEndPoint())
                     .body(Mono.just(onboardUser), OnboardUserDTO.class)
                     .retrieve()
-                    .bodyToMono(OnboardUserDTO.class)
+                    .bodyToMono(ResponseEntity.class)
                     .block();
+            log.info(responseEntity.getBody().toString());
         } catch (Exception e){
             log.error("Error in getting Redis cache service"+ e);
         }

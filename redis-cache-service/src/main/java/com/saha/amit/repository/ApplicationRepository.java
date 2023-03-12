@@ -1,6 +1,8 @@
 package com.saha.amit.repository;
 
 import com.saha.amit.entity.Application;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -13,9 +15,16 @@ public class ApplicationRepository {
     public static final String HASH_KEY = "Application";
     @Autowired
     private RedisTemplate redisTemplate;
+    private final static Logger log = LoggerFactory.getLogger(ApplicationRepository.class);
 
     public Application saveApplication(Application application){
-        redisTemplate.opsForHash().put(HASH_KEY, application.getApplicationId(),application);
+        try {
+            redisTemplate.opsForHash().put(HASH_KEY, application.getApplicationId(),application);
+        } catch (Exception e){
+            log.error(e.getStackTrace().toString());
+            throw  e;
+        }
+
         return application;
     }
 
