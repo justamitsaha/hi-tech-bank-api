@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>aws-s3-service</artifactId>
+    <artifactId>aws-service</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -47,10 +47,26 @@
         </dependency>
         <!--actuator-->
 
+        <!--service discovery-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <!--service discovery-->
+
+        <!--sleuth-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+        <!--sleuth-->
+
+        <!--S3-->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
         </dependency>
+        <!--S3-->
     </dependencies>
 
     <dependencyManagement>
