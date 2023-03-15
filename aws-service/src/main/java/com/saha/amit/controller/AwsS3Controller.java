@@ -27,14 +27,4 @@ public class AwsS3Controller {
         return ResponseEntity.status(HttpStatus.OK).body(awsS3Service.uploadToS3(multipartFile,fileName));
     }
 
-    @GetMapping("public/test")
-    public String test(){
-
-        return "<!DOCTYPE html><html><head><script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script></head><body><div><form method=\"post\" " +
-                "action=\"\" enctype=\"multipart/form-data\" id=\"myform\"><div><input type=\"file\" id=\"file\" name=\"file\"> <input type=\"text\" id=\"fileName\" " +
-                "name=\"text\"> <input type=\"button\" class=\"button\" value=\"Upload\" id=\"but_upload\"></div></form></div><script type=\"text/javascript\">" +
-                "$(document).ready(function(){$(\"#but_upload\").click(function(){var e=new FormData,a=$(\"#file\")[0].files[0],l=$(\"#fileName\").val();" +
-                "e.append(\"multipartFile\",a),e.append(\"fileName\",l),$.ajax({url:\"http://localhost:8080/awsS3Service/public/uploadToS3\",type:\"post\",data:e," +
-                "contentType:!1,processData:!1,success:function(e){0!=e?alert(\"file uploaded\"):alert(\"file not uploaded\")}})})})</script></body></html>";
-    }
 }
