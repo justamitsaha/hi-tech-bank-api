@@ -7,8 +7,12 @@ import com.saha.amit.util.OnboardingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -35,9 +39,6 @@ public class OnboardingService {
         onboardUser.setTextOtp(OnboardingUtil.generateRandomSixDigit());
         onboardUser.setAttachment1Name(OnboardingUtil.getFileNameForStoring(multipartFile1, applicationId));
         onboardUser.setAttachment2Name(OnboardingUtil.getFileNameForStoring(multipartFile2,applicationId));
-
-        System.out.println(onBoardingProperties.getRedisSaveApplicationEndPoint());
-
         try {
             ResponseEntity responseEntity =webClientBuilder.build().post()
                     .uri(onBoardingProperties.getRedisSaveApplicationEndPoint())
@@ -50,11 +51,29 @@ public class OnboardingService {
             log.error("Error in getting Redis cache service"+ e);
         }
 
+        MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
+        formData.add("multipartFile", multipartFile1);
+        formData.add("password", onboardUser.getAttachment1Name());
 
-//        String tmpDir = System.getProperty("java.io.tmpdir");
-//        log.info("Temp file path: " + tmpDir);
-//        String filePath = OnboardingUtil.saveFileLocally(tmpDir,multipartFile1,applicationId);
-//        log.info("File --> "+ filePath);
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part("multipartFile", multipartFile1.getBytes())
+                .header("Content-Disposition", "form-data; name=multipartFile; filename=profile-image.jpg");
+        builder.part("fileName", onboardUser.getAttachment1Name(), MediaType.TEXT_PLAIN)
+                .header("Content-Disposition", "form-data; name=fileName").header("Content-type", "text/plain");
+
+        try {
+            Boolean bool =webClientBuilder.build().post()
+                    .uri(onBoardingProperties.getAwsS3UploadEndpoint())
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .bodyValue(builder.build())
+                    .retrieve()
+                    .bodyToMono(Boolean.class)
+                    .block();
+            log.info(bool.toString());
+        } catch (Exception e){
+            log.error("Error in getting Redis cache service"+ e);
+        }
+
         try {
             //onboardingRepositiry.save(onboardUser);
         }catch (Exception e ){

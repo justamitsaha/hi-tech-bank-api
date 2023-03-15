@@ -16,4 +16,7 @@ public class OnBoardingProperties {
 
     @Value("${redis-app.saveApplication}")
     private String redisSaveApplicationEndPoint;
+
+    @Value("${aws-s3.fileUpload}")
+    private String awsS3UploadEndpoint;
 }
