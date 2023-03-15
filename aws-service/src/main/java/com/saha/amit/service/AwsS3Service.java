@@ -29,7 +29,7 @@ public class AwsS3Service {
         Files.write(path, bytes);
 
         S3Client s3 = s3ConnectionConfig.awsConnectionProvider();
-        String bucketName = "dev-amit-test-bucket--jbj";
+        String bucketName = "dev-amit-test-bucket";
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileName)
