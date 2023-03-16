@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Service
 public class OnboardingService {
@@ -39,17 +40,26 @@ public class OnboardingService {
         onboardUser.setTextOtp(OnboardingUtil.generateRandomSixDigit());
         onboardUser.setAttachment1Name(OnboardingUtil.getFileNameForStoring(multipartFile1, applicationId));
         onboardUser.setAttachment2Name(OnboardingUtil.getFileNameForStoring(multipartFile2,applicationId));
+        Object awsResponse= null;
+        Object redisResponse= null;
+        Date date = new Date();
+        log.info("Redis cache API call start"+ date);
         try {
-            ResponseEntity responseEntity =webClientBuilder.build().post()
+            redisResponse = webClientBuilder.build().post()
                     .uri(onBoardingProperties.getRedisSaveApplicationEndPoint())
                     .body(Mono.just(onboardUser), OnboardUserDTO.class)
                     .retrieve()
-                    .bodyToMono(ResponseEntity.class)
+                    .bodyToMono(Object.class)
                     .block();
-            log.info(responseEntity.getBody().toString());
+            log.info("Redis Response "+redisResponse.toString());
         } catch (Exception e){
             log.error("Error in getting Redis cache service"+ e);
         }
+
+        Date date1 = new Date();
+        log.info("Time taken for 1st API call --> "+ (date1.getTime()- date.getTime())/1000);
+
+        log.info("AWS API call start"+ date1);
 
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
         formData.add("multipartFile", multipartFile1);
@@ -62,17 +72,21 @@ public class OnboardingService {
                 .header("Content-Disposition", "form-data; name=fileName").header("Content-type", "text/plain");
 
         try {
-            Boolean bool =webClientBuilder.build().post()
+            awsResponse =webClientBuilder.build().post()
                     .uri(onBoardingProperties.getAwsS3UploadEndpoint())
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .bodyValue(builder.build())
                     .retrieve()
-                    .bodyToMono(Boolean.class)
+                    .bodyToMono(Object.class)
                     .block();
-            log.info(bool.toString());
+            log.info(awsResponse.toString());
         } catch (Exception e){
             log.error("Error in getting Redis cache service"+ e);
         }
+        Date date2 = new Date();
+        log.info("AWS API call end "+date2);
+        log.info("AWS API call time taken "+ (date2.getTime()- date1.getTime())/1000);
+        log.info("Total time taken "+(date2.getTime()- date1.getTime())/1000);
 
         try {
             //onboardingRepositiry.save(onboardUser);
