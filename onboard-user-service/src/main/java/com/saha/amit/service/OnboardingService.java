@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class OnboardingService {
@@ -47,10 +48,28 @@ public class OnboardingService {
                 .header("Content-Disposition", "form-data; name=multipartFile; filename=profile-image.jpg");
         builder.part("fileName", onboardUser.getAttachment1Name(), MediaType.TEXT_PLAIN)
                 .header("Content-Disposition", "form-data; name=fileName").header("Content-type", "text/plain");
-        var fileUploadPayload =builder.build();
+        var fileUploadPayload = builder.build();
 
-        makeApiCall(onBoardingProperties.getRedisSaveApplicationEndPoint(), false, OnboardUserDTO.class, onboardUser);
-        makeApiCall(onBoardingProperties.getAwsS3UploadEndpoint(), true, Object.class, fileUploadPayload);
+        String fileUploadResponse = "fileUploadResponse";
+        String redisUpdateResponse = "redisUpdateResponse";
+
+        List<Object> responseList = List.of(fileUploadResponse, redisUpdateResponse);
+        Date startDate = new Date();
+        log.info("Transaction started at " + startDate);
+        responseList.parallelStream().map(s -> {
+            if (s == "fileUploadResponse") {
+                s = makeApiCall(onBoardingProperties.getAwsS3UploadEndpoint(), true, Object.class, fileUploadPayload);
+            } else if (s == "redisUpdateResponse") {
+                s = makeApiCall(onBoardingProperties.getRedisSaveApplicationEndPoint(), false, OnboardUserDTO.class, onboardUser);
+            }
+            return s;
+        }).forEach(s -> {
+            log.info("Response Stream "+s.toString());
+        });
+
+        Date endDate = new Date();
+        log.info("Transaction ended at " + endDate);
+        log.info("Time taken for Transaction " + (endDate.getTime() - startDate.getTime()) / 1000);
 
 
         try {
@@ -60,9 +79,6 @@ public class OnboardingService {
             throw e;
         }
         log.info("End applyToOpenAccount service");
-
-
-
         return onboardUser.getApplicationId();
     }
 
@@ -79,18 +95,21 @@ public class OnboardingService {
                         .retrieve()
                         .bodyToMono(Object.class)
                         .block();
-                log.info(response.toString());
             } catch (Exception e) {
-                log.error("Error in getting Redis cache service" + e);
+                log.error("Error in "+url+ " API call" + e);
             }
         } else {
-            response = webClientBuilder.build().post()
-                    .uri(url)
-                    .body(Mono.just(payload), requestClass)
-                    .retrieve()
-                    .bodyToMono(Object.class)
-                    .block();
-            log.info("For API  " + response.toString());
+            try {
+                response = webClientBuilder.build().post()
+                        .uri(url)
+                        .body(Mono.just(payload), requestClass)
+                        .retrieve()
+                        .bodyToMono(Object.class)
+                        .block();
+            } catch (Exception e) {
+                log.error("Error in "+url+ " API call" + e);
+            }
+
         }
         Date endDate = new Date();
         log.info("Api call for --> " + url + " ended at " + endDate);
