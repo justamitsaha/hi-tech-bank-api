@@ -9,14 +9,13 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>authentication</module>
         <module>authentication-jwt-service</module>
         <module>discovery-service</module>
         <module>onboard-user-service</module>
         <module>api-gate-way-service</module>
         <module>redis-cache-service</module>
         <module>config-service</module>
-        <module>aws-s3-service</module>
+        <module>aws-service</module>
     </modules>
 
     <parent>
