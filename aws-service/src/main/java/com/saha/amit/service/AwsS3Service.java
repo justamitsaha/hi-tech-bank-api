@@ -1,6 +1,6 @@
 package com.saha.amit.service;
 
-import com.saha.amit.config.S3ConnectionConfig;
+import com.saha.amit.config.AwsConnectionConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 public class AwsS3Service {
 
     @Autowired
-    S3ConnectionConfig s3ConnectionConfig;
+    AwsConnectionConfig awsConnectionConfig;
 
     public boolean uploadToS3( MultipartFile multipartFile , @RequestPart String fileName) throws IOException {
         byte[] bytes = multipartFile.getBytes();
@@ -28,7 +28,7 @@ public class AwsS3Service {
         Path path = Paths.get(tmpDir+ fileName);
         Files.write(path, bytes);
 
-        S3Client s3 = s3ConnectionConfig.awsConnectionProvider();
+        S3Client s3 = awsConnectionConfig.awsS3ConnectionProvider();
         String bucketName = "dev-amit-test-bucket";
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
