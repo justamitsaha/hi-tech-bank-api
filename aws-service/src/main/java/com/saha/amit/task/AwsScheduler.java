@@ -17,14 +17,17 @@ public class AwsScheduler {
     @Autowired
     AwsSqsUtilityService awsSqsUtilityService;
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 15 * 60 * 1000)
     public void scheduleTaskWithFixedRate() {
         awsSqsUtilityService.readMessageFromQueue();
     }
 
-    public void scheduleTaskWithFixedDelay() {}
+    public void scheduleTaskWithFixedDelay() {
+    }
 
-    public void scheduleTaskWithInitialDelay() {}
+    public void scheduleTaskWithInitialDelay() {
+    }
 
-    public void scheduleTaskWithCronExpression() {}
+    public void scheduleTaskWithCronExpression() {
+    }
 }
