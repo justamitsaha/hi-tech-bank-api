@@ -75,6 +75,13 @@
         </dependency>
         <!--sns-->
 
+        <!--sqs-->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sqs</artifactId>
+        </dependency>
+        <!--sqs-->
+
         <!--gson-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
