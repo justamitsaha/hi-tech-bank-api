@@ -1,5 +1,7 @@
 package com.saha.amit.service;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.saha.amit.config.AwsConnectionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +27,20 @@ public class AwsSqsUtilityService {
                     .build();
             SqsClient sqsClient = awsConnectionConfig.awsSqsConnectionProvider();
             List<Message> messageList = sqsClient.receiveMessage(receiveMessageRequest).messages();
-            messageList.forEach(message ->
-                    logger.info(message.body())
-            );
+            if (messageList.size() > 0) {
+                messageList.forEach(message ->
+                        {
+                            logger.info(message.body());
+                            String json = message.body();
+                            JsonObject convertedObject = new Gson().fromJson(json, JsonObject.class);
+                            logger.info("Message from S3-->" + convertedObject);
+                        }
+                );
+            } else {
+                logger.info("No messages found");
+            }
         } catch (SqsException e) {
-            System.err.println(e.awsErrorDetails().errorMessage());
+            logger.error("Error in reading message from SQS-->" + e.awsErrorDetails().errorMessage());
         }
     }
 }
