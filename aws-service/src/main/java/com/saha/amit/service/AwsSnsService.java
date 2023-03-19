@@ -1,8 +1,11 @@
 package com.saha.amit.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.saha.amit.config.AwsConnectionConfig;
 import com.saha.amit.dto.OnboardUserDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sns.SnsClient;
@@ -10,26 +13,27 @@ import software.amazon.awssdk.services.sns.model.PublishRequest;
 import software.amazon.awssdk.services.sns.model.PublishResponse;
 import software.amazon.awssdk.services.sns.model.SnsException;
 
+import java.io.IOException;
+
 @Service
 public class AwsSnsService {
-
+    private static final Logger logger = LoggerFactory.getLogger(AwsSnsService.class);
     @Autowired
     AwsConnectionConfig awsConnectionConfig;
-    public boolean publishToQueue(OnboardUserDTO onboardUserDTO){
-        SnsClient snsClient = awsConnectionConfig.awsSnsConnectionProvider();
 
-        var data = new Gson().toJson(onboardUserDTO);
-        try {
+    public boolean publishToQueue(OnboardUserDTO onboardUserDTO) {
+        try  {
+            var data = new Gson().toJson(onboardUserDTO);
             PublishRequest request = PublishRequest.builder()
                     .message(data)
                     .topicArn("arn:aws:sns:ap-south-1:615839970612:on-boarding")
                     .build();
-
+            SnsClient snsClient = awsConnectionConfig.awsSnsConnectionProvider();
             PublishResponse result = snsClient.publish(request);
-            System.out.println(result.messageId() + " Message sent. Status is " + result.sdkHttpResponse().statusCode());
+            logger.info(result.messageId() + " Message sent. Status is " + result.sdkHttpResponse().statusCode());
 
         } catch (SnsException e) {
-            System.err.println("Error 1"+e.awsErrorDetails().errorMessage());
+            logger.error("Error 1" + e.awsErrorDetails().errorMessage());
         }
         return true;
     }
