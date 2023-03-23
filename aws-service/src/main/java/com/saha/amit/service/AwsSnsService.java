@@ -7,6 +7,7 @@ import com.saha.amit.dto.OnboardUserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sns.model.PublishRequest;
@@ -20,20 +21,24 @@ public class AwsSnsService {
     private static final Logger logger = LoggerFactory.getLogger(AwsSnsService.class);
     @Autowired
     AwsConnectionConfig awsConnectionConfig;
+    @Value("${aws.snsArn}")
+    String snsArn;
 
     public boolean publishToQueue(OnboardUserDTO onboardUserDTO) {
         try  {
             var data = new Gson().toJson(onboardUserDTO);
             PublishRequest request = PublishRequest.builder()
                     .message(data)
-                    .topicArn("arn:aws:sns:ap-south-1:615839970612:on-boarding")
+                    .topicArn(snsArn)
                     .build();
             SnsClient snsClient = awsConnectionConfig.awsSnsConnectionProvider();
             PublishResponse result = snsClient.publish(request);
             logger.info(result.messageId() + " Message sent. Status is " + result.sdkHttpResponse().statusCode());
 
         } catch (SnsException e) {
-            logger.error("Error 1" + e.awsErrorDetails().errorMessage());
+            logger.error("Error SnsException" + e.awsErrorDetails().errorMessage());
+        } catch (Exception e){
+            logger.error("Error " + e);
         }
         return true;
     }

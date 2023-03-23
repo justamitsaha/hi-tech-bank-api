@@ -8,6 +8,7 @@ import com.saha.amit.dto.OnboardUserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
@@ -19,16 +20,17 @@ import java.util.List;
 public class AwsSqsUtilityService {
 
     private static final Logger log = LoggerFactory.getLogger(AwsSqsUtilityService.class);
-    @Autowired
-    AwsConnectionConfig awsConnectionConfig;
+            @Autowired
+            AwsConnectionConfig awsConnectionConfig;
+            @Value("${aws.sqsUrl}")
+            String sqsUrl;
 
-    public List<OnboardUserDTO> readMessageFromQueue() {
-        List<OnboardUserDTO> onboardUserDTOList = new ArrayList<>();
-        try {
-            ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-                    .queueUrl("https://sqs.ap-south-1.amazonaws.com/615839970612/on-boarding-queue")
-                    .maxNumberOfMessages(5)
-                    .build();
+            public List<OnboardUserDTO> readMessageFromQueue() {
+                List<OnboardUserDTO> onboardUserDTOList = new ArrayList<>();
+                try {
+                    ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
+                            .queueUrl(sqsUrl)
+                            .build();
             SqsClient sqsClient = awsConnectionConfig.awsSqsConnectionProvider();
             List<Message> messageList = sqsClient.receiveMessage(receiveMessageRequest).messages();
             if (messageList.size() > 0) {
@@ -45,6 +47,7 @@ public class AwsSqsUtilityService {
                                 jsonString = jsonString.substring(1, jsonString.length() - 1);
                                 JsonObject jsonObject = new Gson().fromJson(jsonString, JsonObject.class);
                                 OnboardUserDTO onboardUserDTO = new Gson().fromJson(jsonObject.toString(), OnboardUserDTO.class);
+                                log.info("Message from queue"+ onboardUserDTO.toString());
                                 onboardUserDTOList.add(onboardUserDTO);
                             } else {
                                 log.info("No Valid Object found");

@@ -1,5 +1,6 @@
 package com.saha.amit.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
@@ -11,10 +12,13 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 @Configuration
 public class AwsConnectionConfig {
 
+    @Value("${aws.region}")
+    public String awsRegion;
+
     @Bean
     public S3Client awsS3ConnectionProvider() {
         ProfileCredentialsProvider profileCredentialsProvider = ProfileCredentialsProvider.create();
-        Region region = Region.AP_SOUTH_1;
+        Region region = Region.of(awsRegion);
         S3Client s3Client = S3Client.builder()
                 .region(region)
                 .credentialsProvider(profileCredentialsProvider)
@@ -25,7 +29,7 @@ public class AwsConnectionConfig {
     @Bean
     public SnsClient awsSnsConnectionProvider() {
         SnsClient snsClient = SnsClient.builder()
-                .region(Region.AP_SOUTH_1)
+                .region(Region.of(awsRegion))
                 .credentialsProvider(ProfileCredentialsProvider.create())
                 .build();
         return snsClient;
@@ -34,7 +38,7 @@ public class AwsConnectionConfig {
     @Bean
     public SqsClient awsSqsConnectionProvider() {
         SqsClient sqsClient = SqsClient.builder()
-                .region(Region.AP_SOUTH_1)
+                .region(Region.of(awsRegion))
                 .credentialsProvider(ProfileCredentialsProvider.create())
                 .build();
         return sqsClient;
