@@ -1,5 +1,6 @@
 package com.saha.amit.service;
 
+import com.saha.amit.AwsServiceApplication;
 import com.saha.amit.config.MailConfig;
 import com.saha.amit.dto.OtpMailSenderDTO;
 import org.slf4j.Logger;
@@ -8,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 @Service
 public class MailSenderService {
@@ -18,21 +23,29 @@ public class MailSenderService {
     @Value("${spring.mail.username}")
     String mailId;
 
+    @Value("${mail.otp.subject}")
     String subject;
-    @Value("mail.otp.body")
     String body;
-    public boolean sendMail(Object object){
+    public boolean sendMail(Object object) throws MessagingException {
         if(object instanceof OtpMailSenderDTO){
             OtpMailSenderDTO otpMailSenderDTO = (OtpMailSenderDTO) object;
             log.info("Sending mail to -->"+(otpMailSenderDTO.getEmail()));
-            SimpleMailMessage message = new SimpleMailMessage();
-            //subject = subject.replace("{#OTP}",otpMailSenderDTO.getOtp());
-            subject = "Your OTP is "+ otpMailSenderDTO.getOtp();
-            message.setFrom(mailId);
-            message.setTo(otpMailSenderDTO.getEmail());
-            message.setSubject(subject);
-            message.setText(body);
-            emailSender.send(message);
+            body = AwsServiceApplication.EMAIL_OTP_TEMPLATE;
+            body = body.replace("{OTP}",otpMailSenderDTO.getOtp());
+            subject= otpMailSenderDTO.getEmail() + subject;
+//            SimpleMailMessage message = new SimpleMailMessage();
+//            message.setFrom(mailId);
+//            message.setTo(otpMailSenderDTO.getEmail());
+//            message.setSubject(subject);
+//            message.setText(body);
+//            emailSender.send(message);
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setText(body,true);
+            mimeMessageHelper.setTo(otpMailSenderDTO.getEmail());
+            mimeMessageHelper.setFrom(mailId);
+            emailSender.send(mimeMessage);
         }
         return true;
     }

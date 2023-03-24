@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class OtpMailSenderDTO {
     public String email;
     public String otp;
+    public String type;
 
 }
