@@ -1,5 +1,6 @@
 package com.saha.amit.controller;
 
+import com.saha.amit.constants.AwsConstants;
 import com.saha.amit.dto.OnboardUserDTO;
 import com.saha.amit.dto.OtpMailSenderDTO;
 import com.saha.amit.service.AwsSqsUtilityService;
@@ -32,10 +33,10 @@ public class AwsSqsController {
             OtpMailSenderDTO otpMailSenderDTO1 = new OtpMailSenderDTO();
             otpMailSenderDTO.setEmail(onboardUserDTO.getEmail());
             otpMailSenderDTO.setOtp(onboardUserDTO.getEmailOtp());
-            otpMailSenderDTO.setType("Email");
+            otpMailSenderDTO.setType(AwsConstants.EMAIL);
             otpMailSenderDTO1.setEmail(onboardUserDTO.getEmail());
             otpMailSenderDTO1.setOtp(onboardUserDTO.getTextOtp());
-            otpMailSenderDTO1.setType("SMS");
+            otpMailSenderDTO1.setType(AwsConstants.SMS);
             otpMailSenderDTOList.add(otpMailSenderDTO);
             otpMailSenderDTOList.add(otpMailSenderDTO1);
         });
