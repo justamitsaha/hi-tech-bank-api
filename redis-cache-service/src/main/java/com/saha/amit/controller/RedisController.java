@@ -36,9 +36,12 @@ public class RedisController {
             return ResponseEntity.status(HttpStatus.OK).body(applicationRepository.getAllApplication());
     }
 
-    @GetMapping("public/findApplicationById/{applicationId}")
-    public ResponseEntity<Application> findApplicationById(@PathVariable String applicationId){
-        return ResponseEntity.status(HttpStatus.OK).body(applicationRepository.findApplicationById(applicationId));
+    @GetMapping("public/findApplicationById")
+    public ResponseEntity<Application> findApplicationById(@RequestParam String applicationId){
+        log.info("Inside findApplicationById "+ applicationId);
+        var response = applicationRepository.findApplicationById(applicationId);
+        log.info("response fetched -->"+ response.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("public/deleteApplicationById/{applicationId}")
