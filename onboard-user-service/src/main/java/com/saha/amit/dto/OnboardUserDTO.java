@@ -12,6 +12,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OnboardUserDTO {
+
+    private String applicationId;
     @NotEmpty(message = "Please provide account type!")
     private String accountType;
     private Date dob;
@@ -28,7 +30,6 @@ public class OnboardUserDTO {
     private String email;
     @NotEmpty(message = "Phone not cannot be blank!")
     private String phone;
-    private String applicationId;
     private String emailOtp;
     private String textOtp;
     private String attachment1Name;

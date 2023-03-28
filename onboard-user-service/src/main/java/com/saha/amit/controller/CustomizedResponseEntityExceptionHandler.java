@@ -18,7 +18,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-        System.out.println("<-----Inside handleAllExceptions---->" + ex.getMessage());
+        System.out.println("<-----Inside handleAllExceptions---->" + ex);
         String error = ex.getMessage();
         return new ResponseEntity<Object>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

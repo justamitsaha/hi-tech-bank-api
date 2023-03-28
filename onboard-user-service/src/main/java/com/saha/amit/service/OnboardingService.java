@@ -1,7 +1,9 @@
 package com.saha.amit.service;
 
 import com.saha.amit.config.OnBoardingProperties;
+import com.saha.amit.constants.OnboardingConstants;
 import com.saha.amit.dto.OnboardUserDTO;
+import com.saha.amit.dto.ValidateOtpDTO;
 import com.saha.amit.repository.OnboardingRepositiry;
 import com.saha.amit.util.OnboardingUtil;
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
@@ -52,19 +55,22 @@ public class OnboardingService {
 
         String fileUploadResponse = "fileUploadResponse";
         String redisUpdateResponse = "redisUpdateResponse";
+        String postSQSResponse = "postSQSResponse";
 
-        List<Object> responseList = List.of(fileUploadResponse, redisUpdateResponse);
+        List<Object> responseList = List.of(fileUploadResponse, redisUpdateResponse, postSQSResponse);
         Date startDate = new Date();
         log.info("Transaction started at " + startDate);
-        responseList.parallelStream().map(s -> {
-            if (s == "fileUploadResponse") {
-                s = makeApiCall(onBoardingProperties.getAwsS3UploadEndpoint(), true, Object.class, fileUploadPayload);
-            } else if (s == "redisUpdateResponse") {
-                s = makeApiCall(onBoardingProperties.getRedisSaveApplicationEndPoint(), false, OnboardUserDTO.class, onboardUser);
+        responseList.stream().map(s -> {
+            if (s.equals("fileUploadResponse")) {
+                s = makeApiCall(onBoardingProperties.getAwsS3UploadEndpoint(), true, Object.class, fileUploadPayload, OnboardingConstants.POST);
+            } else if (s.equals("redisUpdateResponse")) {
+                s = makeApiCall(onBoardingProperties.getRedisSaveApplicationEndPoint(), false, OnboardUserDTO.class, onboardUser, OnboardingConstants.POST);
+            } else if (s.equals("postSQSResponse")) {
+                s = makeApiCall(onBoardingProperties.getAwsSNSPost(), false, Boolean.class, onboardUser, OnboardingConstants.PUT);
             }
             return s;
         }).forEach(s -> {
-            log.info("Response Stream "+s.toString());
+            log.info("Response Stream " + s.toString());
         });
 
         Date endDate = new Date();
@@ -82,7 +88,14 @@ public class OnboardingService {
         return onboardUser.getApplicationId();
     }
 
-    public Object makeApiCall(String url, Boolean isFormPost, Class<?> requestClass, Object payload) {
+    public boolean validateOtp(ValidateOtpDTO validateOtpDTO) {
+        log.info("Inside Validate OTP service for " + validateOtpDTO.getType());
+        var response =(LinkedHashMap)makeApiCall(onBoardingProperties.getRedisGetApplication(), false, OnboardUserDTO.class, validateOtpDTO.getApplicationId(), OnboardingConstants.GET);
+        var otp = (validateOtpDTO.getType().equals(OnboardingConstants.SMS_TYPE_OTP)) ? response.get("textOtp") : response.get("emailOtp");
+        return validateOtpDTO.getOtp().equals(otp);
+    }
+
+    public Object makeApiCall(String url, Boolean isFormPost, Class<?> requestClass, Object payload, String methodType) {
         Date startDate = new Date();
         log.info("Api call for --> " + url + " started at " + startDate);
         Object response = null;
@@ -96,19 +109,46 @@ public class OnboardingService {
                         .bodyToMono(Object.class)
                         .block();
             } catch (Exception e) {
-                log.error("Error in "+url+ " API call" + e);
+                log.error("Error in " + url + " API call" + e);
             }
         } else {
-            try {
-                response = webClientBuilder.build().post()
-                        .uri(url)
-                        .body(Mono.just(payload), requestClass)
-                        .retrieve()
-                        .bodyToMono(Object.class)
-                        .block();
-            } catch (Exception e) {
-                log.error("Error in "+url+ " API call" + e);
+            if (methodType.equals(OnboardingConstants.POST)) {
+                try {
+                    response = webClientBuilder.build().post()
+                            .uri(url)
+                            .body(Mono.just(payload), requestClass)
+                            .retrieve()
+                            .bodyToMono(Object.class)
+                            .block();
+                } catch (Exception e) {
+                    log.error("Error in " + url + " API call" + e);
+                }
+            } else if (methodType.equals(OnboardingConstants.PUT)) {
+                try {
+                    response = webClientBuilder.build().put()
+                            .uri(url)
+                            .body(Mono.just(payload), requestClass)
+                            .retrieve()
+                            .bodyToMono(Object.class)
+                            .block();
+                } catch (Exception e) {
+                    log.error("Error in " + url + " API call" + e);
+                }
+            } else if (methodType.equals(OnboardingConstants.GET)) {
+                try {
+                    response = webClientBuilder.build().get()
+                            .uri(url,
+                                    uriBuilder -> uriBuilder.queryParam("applicationId", payload.toString()).build())
+                            .retrieve()
+                            .bodyToMono(Object.class)
+                            .block();
+                    assert response != null;
+                    log.info(response.toString());
+                } catch (Exception e) {
+                    log.error("Error in " + url + " API call" + e);
+                }
             }
+
 
         }
         Date endDate = new Date();
@@ -116,5 +156,4 @@ public class OnboardingService {
         log.info("Time taken for Api call " + (endDate.getTime() - startDate.getTime()) / 1000);
         return response;
     }
-
 }
