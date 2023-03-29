@@ -76,6 +76,13 @@
         </dependency>
         <!--sleuth-->
 
+        <!-- zipkin-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+        </dependency>
+        <!-- zipkin-->
+
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

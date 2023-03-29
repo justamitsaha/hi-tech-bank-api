@@ -54,13 +54,6 @@
         </dependency>
         <!--service discovery-->
 
-        <!--sleuth-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
-        </dependency>
-        <!--sleuth-->
-
         <!--S3-->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
@@ -97,6 +90,20 @@
             <version>2.5.6</version>
         </dependency>
         <!--mail sender-->
+
+        <!--sleuth-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+        <!--sleuth-->
+
+        <!-- zipkin-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+        </dependency>
+        <!-- zipkin-->
 
     </dependencies>
 
