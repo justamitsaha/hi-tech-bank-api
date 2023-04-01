@@ -30,7 +30,6 @@ public class SecurityConfig {
     PropertiesConfig propertiesConfig;
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        System.out.println(propertiesConfig.getJwtKey()+ propertiesConfig.getAllowedUrls());
         http.cors().configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(propertiesConfig.getAllowedUrls());
