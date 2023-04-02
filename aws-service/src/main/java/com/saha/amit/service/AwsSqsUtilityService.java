@@ -30,9 +30,11 @@ public class AwsSqsUtilityService {
                 try {
                     ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
                             .queueUrl(sqsUrl)
+                            .maxNumberOfMessages(10)
                             .build();
             SqsClient sqsClient = awsConnectionConfig.awsSqsConnectionProvider();
             List<Message> messageList = sqsClient.receiveMessage(receiveMessageRequest).messages();
+            log.info("Message count read from queue --->"+ messageList.size());
             if (messageList.size() > 0) {
                 messageList.forEach(message ->
                         {
@@ -49,6 +51,12 @@ public class AwsSqsUtilityService {
                                 OnboardUserDTO onboardUserDTO = new Gson().fromJson(jsonObject.toString(), OnboardUserDTO.class);
                                 log.info("Message from queue"+ onboardUserDTO.toString());
                                 onboardUserDTOList.add(onboardUserDTO);
+
+                                DeleteMessageRequest deleteMessageRequest = DeleteMessageRequest.builder()
+                                        .queueUrl(sqsUrl)
+                                        .receiptHandle(message.receiptHandle())
+                                        .build();
+                                sqsClient.deleteMessage(deleteMessageRequest);
                             } else {
                                 log.info("No Valid Object found");
                             }
