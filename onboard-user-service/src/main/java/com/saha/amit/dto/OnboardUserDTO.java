@@ -34,4 +34,5 @@ public class OnboardUserDTO {
     private String textOtp;
     private String attachment1Name;
     private String attachment2Name;
+    private String isProcessed;
 }
